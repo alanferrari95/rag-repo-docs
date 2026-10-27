@@ -363,8 +363,12 @@
       "du05": 0.6768854856491089,
       "du06": 0.8027830719947815
     },
+    "dev_abstention": {
+      "off_topic": "2/2",
+      "unanswerable": "1/4"
+    },
     "k=5": {
-      "faithfulness": 0.9523809523809523,
+      "faithfulness": 1.0,
       "faithfulness_n": 42,
       "answer_hit": 0.5833333333333334,
       "false_abstention": 0.0,
@@ -651,5 +655,5 @@
       "n_chunks": 25
     }
   },
-  "seconds": 760.9
+  "seconds": 679.0
 }
