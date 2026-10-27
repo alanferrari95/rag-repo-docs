@@ -41,6 +41,7 @@ class Answer:
     hits: list[Hit]
     citations: list[int] = field(default_factory=list)  # 1-based positions in hits
     backend: str = "extractive"
+    confidence: float | None = None  # extractive: similarity of the best sentence, kept even when abstaining
 
     @property
     def abstained(self) -> bool:
@@ -134,11 +135,12 @@ class ExtractiveGenerator:
 
         scores = self.embedder.embed_documents([s for s, _ in candidates]) @ self.embedder.embed_query(question)
         order = np.argsort(-scores)[: self.max_sentences]
-        if scores[order[0]] < self.min_score:
-            return Answer(question, ABSTAIN, hits, backend=self.name)
+        best = float(scores[order[0]])
+        if best < self.min_score:
+            return Answer(question, ABSTAIN, hits, backend=self.name, confidence=best)
         picked = [i for i in order if scores[i] >= self.min_score]
         text = " ".join(f"{candidates[i][0]} [{candidates[i][1]}]" for i in picked)
-        return Answer(question, text, hits, parse_citations(text, len(hits)), self.name)
+        return Answer(question, text, hits, parse_citations(text, len(hits)), self.name, best)
 
 
 class LLMGenerator:

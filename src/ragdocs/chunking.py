@@ -119,3 +119,9 @@ def chunk_document(doc: Document, max_words: int = 220, overlap: int = 40) -> li
 
 def chunk_corpus(docs: list[Document], max_words: int = 220, overlap: int = 40) -> list[Chunk]:
     return [c for doc in docs for c in chunk_document(doc, max_words, overlap)]
+
+
+def chunk_fixed(doc: Document, max_words: int = 220, overlap: int = 40) -> list[Chunk]:
+    """Baseline: fixed word windows over the whole document, blind to headings."""
+    return [Chunk(f"{doc.doc_id}#{n}", doc.doc_id, "", text)
+            for n, text in enumerate(_windows(doc.text, max_words, overlap))]

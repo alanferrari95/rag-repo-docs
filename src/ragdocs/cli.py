@@ -18,7 +18,7 @@ from .generation import ExtractiveGenerator, LLMGenerator
 from .index import VectorIndex
 from .llm import BACKENDS, make_llm
 from .pipeline import RAG
-from .retrieval import DenseRetriever
+from .retrieval import DEFAULT_RERANKER, DenseRetriever
 
 DEFAULT_INDEX = Path(__file__).resolve().parents[2] / "index"
 
@@ -60,6 +60,12 @@ def cmd_ask(args: argparse.Namespace) -> None:
         print(f"{mark}[{n}] {hit.score:.3f}  {hit.chunk.chunk_id}  [{hit.chunk.heading}]")
 
 
+def cmd_eval(args: argparse.Namespace) -> None:
+    from .experiments import run, render
+
+    print(render(run(reranker=None if args.no_rerank else DEFAULT_RERANKER)))
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ragdocs")
     parser.add_argument("--index", type=Path, default=DEFAULT_INDEX)
@@ -83,6 +89,10 @@ def main(argv: list[str] | None = None) -> None:
     ask.add_argument("--backend", default="extractive", choices=("extractive", *BACKENDS))
     ask.add_argument("--no-grounding", action="store_true", help="drop the grounding instruction (LLM backends)")
     ask.set_defaults(func=cmd_ask)
+
+    evaluate = sub.add_parser("eval", help="run every measured experiment into eval/results/")
+    evaluate.add_argument("--no-rerank", action="store_true")
+    evaluate.set_defaults(func=cmd_eval)
 
     args = parser.parse_args(argv)
     args.func(args)
