@@ -1,0 +1,39 @@
+# The documents this RAG system answers questions about: the public docs of three
+# of my own repositories, pinned to a commit so the corpus (and the eval numbers)
+# are reproducible. scripts/snapshot_corpus.py copies them into corpus/<repo>/.
+#
+# Left out on purpose: agent prompts (SKILL.md, AGENTS.md test fixtures),
+# LinkedIn post rules (POSTING.md) and CV mapping files (cv-evidence.md),
+# which are about the author rather than the projects.
+repos:
+  - name: invoice-mlops
+    url: https://github.com/alanferrari95/invoice-mlops
+    local: ../invoice-mlops
+    commit: 69081508a9ea156517cb4edeb697b6de3a0c984d
+    paths:
+      - README.md
+      - docs/architecture.md
+      - docs/walkthrough.md
+      - docs/runbook.md
+      - docs/evidence.md
+      - docs/cost.md
+      - docs/model_card.md
+      - docs/pii.md
+      - infra/README.md
+      - data/gold/extract/README.md
+  - name: agent-harness
+    url: https://github.com/alanferrari95/agent-harness
+    local: ../agent-harness
+    commit: 65761460626cb42de4e81c4f347e5fa8c4b6ac8e
+    paths:
+      - README.md
+      - docs/results.md
+  - name: jobbot
+    url: https://github.com/alanferrari95/jobbot
+    local: ../job-finder
+    commit: a61ab6efc77e1882774fd8c25f074444830c1759
+    paths:
+      - README.md
+      - TAILORING.md
+      - docs/left-out.md
+      - docs/scheduling.md

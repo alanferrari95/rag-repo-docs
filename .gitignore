@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+# Built artifacts: rebuild with `python -m ragdocs build`
+index/
