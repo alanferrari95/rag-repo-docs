@@ -7,8 +7,8 @@ own repositories ([invoice-mlops](https://github.com/alanferrari95/invoice-mlops
 passage behind every sentence.
 
 I built it to learn RAG properly, so the point is the measurement, not the chatbot:
-retrieval and generation are evaluated separately, on a question set written by hand
-before looking at any retrieval result, and every number below comes from
+retrieval and generation are evaluated separately, on a question set written from the
+docs before any retrieval result existed, and every number below comes from
 `python -m ragdocs eval`. Everything runs locally on a CPU with no API key. LLM backends
 are optional and bring their own key or machine.
 
@@ -56,8 +56,9 @@ questions, so one question is worth about 3 points.
 | fixed 220-word windows | 93 | 50% | 89% | 0.66 |
 | fixed 1000-word windows (broken on purpose) | 25 | 61% | 89% | 0.72 |
 
-Huge chunks keep recall roughly level here, because with 25 chunks almost any chunk of
-the right file is "relevant". The cost shows up in the answer: answer hit drops from 58% to
+Recall is not where huge chunks hurt: with only 25 chunks, almost any chunk of the right
+file contains the quote, so recall@1 is even slightly higher (61% vs 58%). The cost shows
+up in the answer: answer hit drops from 58% to
 47% because the right sentence is buried in 1,000 words.
 
 **Answers (extractive, no LLM, hybrid + rerank, k=5)**
@@ -105,8 +106,9 @@ QUERY (every question)
 
 ## Evaluation method
 
-- **Golden set** ([`eval/golden.yaml`](eval/golden.yaml)): questions written from the docs
-  before any retrieval result was looked at. Each one has the answer and one or more evidence
+- **Golden set** ([`eval/golden.yaml`](eval/golden.yaml)): 42 questions drafted with an AI
+  assistant that read only the docs, never the code or any retrieval output, so the questions
+  could not be shaped by what retrieval returns. Each one has the answer and one or more evidence
   quotes. A retrieved chunk counts as relevant if it comes from the evidence file and
   contains the quote, so the labels survive a change of chunking. Questions are tagged
   `paraphrase` (different words than the docs), `exact` (hinges on an identifier such as a

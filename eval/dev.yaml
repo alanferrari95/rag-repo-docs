@@ -1,5 +1,5 @@
-# Calibration set for the abstention threshold. Hand-written from the corpus before
-# looking at any retrieval result; no question or quote overlaps golden.yaml.
+# Calibration set for the abstention threshold. Drafted with an AI assistant from the corpus
+# alone, before any retrieval result existed; no question or quote overlaps golden.yaml.
 questions:
   - id: d01
     question: "What max_depth is the risk model's XGBoost trained with?"

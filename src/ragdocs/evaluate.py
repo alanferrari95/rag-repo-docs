@@ -1,4 +1,4 @@
-"""Evaluate retrieval and generation separately, on a hand-made golden set.
+"""Evaluate retrieval and generation separately, on a golden set of questions with evidence quotes.
 
 Retrieval (needs no LLM):
 - recall@k (hit rate): share of answerable questions with at least one
