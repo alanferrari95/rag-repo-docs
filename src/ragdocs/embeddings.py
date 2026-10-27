@@ -52,7 +52,7 @@ TOKEN = re.compile(r"[a-z0-9]+")
 
 
 class HashingEmbedder:
-    def __init__(self, dim: int = 512):
+    def __init__(self, dim: int = 2048):
         self.name = f"hashing-{dim}"
         self.dim = dim
 
@@ -73,5 +73,5 @@ class HashingEmbedder:
 def make_embedder(name: str) -> Embedder:
     if name.startswith("hashing"):
         _, _, dim = name.partition("-")
-        return HashingEmbedder(int(dim) if dim else 512)
+        return HashingEmbedder(int(dim) if dim else 2048)
     return FastEmbedEmbedder(name)

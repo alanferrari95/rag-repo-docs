@@ -2,6 +2,7 @@
 
     python -m ragdocs build                 # chunk + embed the corpus into index/
     python -m ragdocs search "question" -k 5
+    python -m ragdocs ask "question" [--backend extractive|ollama|gemini|claude] [--no-grounding]
 """
 
 from __future__ import annotations
@@ -13,7 +14,11 @@ from pathlib import Path
 from .chunking import chunk_corpus
 from .corpus import DEFAULT_CORPUS, load_corpus
 from .embeddings import DEFAULT_MODEL, make_embedder
+from .generation import ExtractiveGenerator, LLMGenerator
 from .index import VectorIndex
+from .llm import BACKENDS, make_llm
+from .pipeline import RAG
+from .retrieval import DenseRetriever
 
 DEFAULT_INDEX = Path(__file__).resolve().parents[2] / "index"
 
@@ -37,6 +42,24 @@ def cmd_search(args: argparse.Namespace) -> None:
         print(f"{rank}. {score:.3f}  {chunk.chunk_id}  [{chunk.heading}]\n   {preview}")
 
 
+def make_rag(index_dir: Path, backend: str = "extractive", grounded: bool = True, k: int = 5) -> RAG:
+    index = VectorIndex.load(index_dir)
+    embedder = make_embedder(index.embedder_name)
+    if backend == "extractive":
+        generator = ExtractiveGenerator(embedder)
+    else:
+        generator = LLMGenerator(make_llm(backend), grounded)
+    return RAG(DenseRetriever(index, embedder), generator, k)
+
+
+def cmd_ask(args: argparse.Namespace) -> None:
+    answer = make_rag(args.index, args.backend, not args.no_grounding, args.k).ask(args.question)
+    print(f"{answer.text}\n")
+    for n, hit in enumerate(answer.hits, 1):
+        mark = "*" if n in answer.citations else " "
+        print(f"{mark}[{n}] {hit.score:.3f}  {hit.chunk.chunk_id}  [{hit.chunk.heading}]")
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ragdocs")
     parser.add_argument("--index", type=Path, default=DEFAULT_INDEX)
@@ -53,6 +76,13 @@ def main(argv: list[str] | None = None) -> None:
     search.add_argument("question")
     search.add_argument("-k", type=int, default=5)
     search.set_defaults(func=cmd_search)
+
+    ask = sub.add_parser("ask", help="answer a question with citations")
+    ask.add_argument("question")
+    ask.add_argument("-k", type=int, default=5)
+    ask.add_argument("--backend", default="extractive", choices=("extractive", *BACKENDS))
+    ask.add_argument("--no-grounding", action="store_true", help="drop the grounding instruction (LLM backends)")
+    ask.set_defaults(func=cmd_ask)
 
     args = parser.parse_args(argv)
     args.func(args)

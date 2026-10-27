@@ -33,5 +33,5 @@ def test_save_and_load_round_trip(docs, tmp_path):
     index.save(tmp_path)
     loaded = VectorIndex.load(tmp_path)
     assert loaded.chunks == index.chunks
-    assert loaded.embedder_name == "hashing-512"
+    assert loaded.embedder_name == "hashing-2048"
     assert np.array_equal(loaded.vectors, index.vectors)
