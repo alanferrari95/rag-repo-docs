@@ -39,6 +39,25 @@ ROOT = Path(__file__).resolve().parents[2]
 EVAL = ROOT / "eval"
 
 
+class CachedRetriever:
+    """Every retriever here returns a consistent ranking (top-k is a prefix of top-10), so retrieve once
+    per question at depth 10 and slice. The rerank costs ~1 s of CPU per question; this avoids paying it
+    again for each k."""
+
+    def __init__(self, base: Retriever, depth: int = 10):
+        self.base = base
+        self.name = base.name
+        self.depth = depth
+        self.cache: dict[str, list] = {}
+
+    def retrieve(self, question: str, k: int):
+        if k > self.depth:
+            return self.base.retrieve(question, k)
+        if question not in self.cache:
+            self.cache[question] = self.base.retrieve(question, self.depth)
+        return self.cache[question][:k]
+
+
 def build_retrievers(index: VectorIndex, embedder: Embedder, cross_encoder: CrossEncoder | None) -> dict:
     dense = DenseRetriever(index, embedder)
     bm25 = BM25Retriever(index.chunks)
@@ -47,7 +66,7 @@ def build_retrievers(index: VectorIndex, embedder: Embedder, cross_encoder: Cros
     if cross_encoder is not None:
         retrievers["dense+rerank"] = RerankRetriever(dense, cross_encoder)
         retrievers["hybrid+rerank"] = RerankRetriever(hybrid, cross_encoder)
-    return retrievers
+    return {name: CachedRetriever(r) for name, r in retrievers.items()}
 
 
 def answer_all(rag: RAG, questions, k: int) -> dict:
@@ -83,9 +102,13 @@ def run(corpus: Path | None = None, out_dir: Path = EVAL / "results", embedder_n
     probe = RAG(retrievers[best], ExtractiveGenerator(embedder, min_score=float("-inf")), k)
     dev_scores = {qid: a.confidence for qid, a in answer_all(probe, dev, k).items()}
     threshold = pick_threshold(dev_scores, dev)
+    dev_abstention = {kind: f"{sum(dev_scores[q.qid] < threshold for q in qs)}/{len(qs)}"
+                      for kind in ("off_topic", "unanswerable")
+                      if (qs := [q for q in dev if q.kind == kind])}
     rag = RAG(retrievers[best], ExtractiveGenerator(embedder, min_score=threshold), k)
     answers = answer_all(rag, golden, k)
     results["answers"] = {"retriever": best, "threshold_from_dev": threshold, "dev_scores": dev_scores,
+                          "dev_abstention": dev_abstention,
                           f"k={k}": generation_metrics(answers, golden),
                           "k=1": generation_metrics(answer_all(rag, golden, 1), golden)}
     results["examples"] = {qid: {"question": a.question, "answer": a.text, "cited": a.cited_chunks}
@@ -96,7 +119,7 @@ def run(corpus: Path | None = None, out_dir: Path = EVAL / "results", embedder_n
     for label, words, overlap in (("fixed 220", 220, 40), ("fixed 1000", 1000, 100)):
         fixed = [c for d in docs for c in chunk_fixed(d, words, overlap)]
         fixed_index = VectorIndex.build(fixed, embedder)
-        fixed_dense = DenseRetriever(fixed_index, embedder)
+        fixed_dense = CachedRetriever(DenseRetriever(fixed_index, embedder))
         results["chunking"][label] = retrieval_metrics(fixed_dense, golden) | {"n_chunks": len(fixed)}
         if label == "fixed 1000":
             huge_rag = RAG(fixed_dense, ExtractiveGenerator(embedder, min_score=threshold), k)
@@ -139,7 +162,9 @@ def render(r: dict) -> str:
         f"dev set: {s['dev']} questions.", "",
         "## Retrieval", "", *_retrieval_table(r["retrieval"]), "",
         f"## Answers (extractive, no LLM, retriever `{a['retriever']}`)", "",
-        f"Abstention threshold {a['threshold_from_dev']} picked on the dev set only.", "",
+        f"Abstention threshold {a['threshold_from_dev']} (similarity of the best sentence) picked on the dev set "
+        f"only. On the dev set it abstains on {a['dev_abstention'].get('off_topic', 'n/a')} off-topic questions "
+        f"and {a['dev_abstention'].get('unanswerable', 'n/a')} near-miss questions about these projects.", "",
         "| Setting | Faithfulness (lexical) | Answer hit | Abstained, answerable | Abstained, unanswerable |",
         "|---|---|---|---|---|",
         _answer_row(f"k={s['k']}", a[f"k={s['k']}"]),

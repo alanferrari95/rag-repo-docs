@@ -40,7 +40,7 @@ that the their then there these this to was were what when where which who why w
 class Question:
     qid: str
     question: str
-    kind: str  # paraphrase | exact | unanswerable
+    kind: str  # paraphrase | exact | unanswerable | off_topic
     answer: str | None
     evidence: tuple[tuple[str, str], ...]  # (doc_id, quote)
 
@@ -114,8 +114,12 @@ def sentence_support(sentence: str, chunks: list[Chunk]) -> float:
     return max((len(words & content_words(c.embed_text)) / len(words) for c in chunks), default=0.0)
 
 
+ANSWER_SPLIT = re.compile(r"(?<=\])\s+(?!\[)|" + SENTENCE_END.pattern)
+
+
 def answer_sentences(text: str) -> list[str]:
-    parts = SENTENCE_END.split(" ".join(text.split()))
+    """Split at sentence ends and after each citation group: "A [1] B [2]" is two claims even without a period."""
+    parts = ANSWER_SPLIT.split(" ".join(text.split()))
     return [p for p in parts if content_words(p)]
 
 

@@ -114,3 +114,16 @@ def test_judge_rejects_malformed_replies():
         parse_judgement("I think it is fine.")
     with pytest.raises(ValueError, match="unknown verdict"):
         parse_judgement('{"claims": [{"claim": "x", "verdict": "maybe"}]}')
+
+
+def test_answer_sentences_split_after_citations_without_periods():
+    from ragdocs.evaluate import answer_sentences
+    text = "Roll back with rollback.sh; no rebuild [1] Checked on 2026-10-22: [2] The model is Flash. [3]"
+    assert answer_sentences(text) == ["Roll back with rollback.sh; no rebuild [1]", "Checked on 2026-10-22: [2]",
+                                      "The model is Flash."]
+
+
+def test_extractive_answer_spanning_two_chunks_is_fully_faithful(chunks):
+    hits = _hits(chunks)
+    text = "`canary.sh` sends 20% of traffic to the new revision [2] The drift job computes PSI and KS on every feature [4]"
+    assert faithfulness(Answer("q", text, hits)) == 1.0

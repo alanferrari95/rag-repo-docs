@@ -1,0 +1,655 @@
+{
+  "setup": {
+    "embedder": "BAAI/bge-small-en-v1.5",
+    "reranker": "Xenova/ms-marco-MiniLM-L-6-v2",
+    "n_docs": 16,
+    "n_chunks": 127,
+    "golden_answerable": 36,
+    "golden_unanswerable": 6,
+    "dev": 12,
+    "k": 5
+  },
+  "retrieval": {
+    "dense": {
+      "retriever": "dense",
+      "all": {
+        "recall@1": 0.5833333333333334,
+        "recall@3": 0.8611111111111112,
+        "recall@5": 0.9166666666666666,
+        "recall@10": 0.9444444444444444,
+        "mrr@10": 0.7201719576719577,
+        "n": 36
+      },
+      "by_kind": {
+        "exact": {
+          "recall@1": 0.6666666666666666,
+          "recall@3": 0.9166666666666666,
+          "recall@5": 0.9166666666666666,
+          "recall@10": 1.0,
+          "mrr@10": 0.7896825396825397,
+          "n": 12
+        },
+        "paraphrase": {
+          "recall@1": 0.5416666666666666,
+          "recall@3": 0.8333333333333334,
+          "recall@5": 0.9166666666666666,
+          "recall@10": 0.9166666666666666,
+          "mrr@10": 0.6854166666666667,
+          "n": 24
+        }
+      },
+      "ranks": {
+        "q01": 2,
+        "q02": 3,
+        "q03": 1,
+        "q04": 4,
+        "q05": 1,
+        "q06": null,
+        "q07": 1,
+        "q08": 2,
+        "q09": 1,
+        "q10": 1,
+        "q11": 2,
+        "q12": null,
+        "q13": 1,
+        "q14": 1,
+        "q15": 1,
+        "q16": 2,
+        "q17": 1,
+        "q18": 1,
+        "q19": 1,
+        "q20": 1,
+        "q21": 1,
+        "q22": 1,
+        "q23": 2,
+        "q24": 3,
+        "q25": 7,
+        "q26": 2,
+        "q27": 3,
+        "q28": 1,
+        "q29": 1,
+        "q30": 1,
+        "q31": 5,
+        "q32": 3,
+        "q33": 1,
+        "q34": 1,
+        "q35": 1,
+        "q36": 1
+      }
+    },
+    "bm25": {
+      "retriever": "bm25",
+      "all": {
+        "recall@1": 0.6388888888888888,
+        "recall@3": 0.75,
+        "recall@5": 0.8055555555555556,
+        "recall@10": 0.8611111111111112,
+        "mrr@10": 0.7131944444444445,
+        "n": 36
+      },
+      "by_kind": {
+        "exact": {
+          "recall@1": 0.6666666666666666,
+          "recall@3": 0.9166666666666666,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.8125,
+          "n": 12
+        },
+        "paraphrase": {
+          "recall@1": 0.625,
+          "recall@3": 0.6666666666666666,
+          "recall@5": 0.7083333333333334,
+          "recall@10": 0.7916666666666666,
+          "mrr@10": 0.6635416666666667,
+          "n": 24
+        }
+      },
+      "ranks": {
+        "q01": 8,
+        "q02": 1,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 2,
+        "q07": 1,
+        "q08": null,
+        "q09": null,
+        "q10": 1,
+        "q11": 1,
+        "q12": 5,
+        "q13": 1,
+        "q14": 1,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 1,
+        "q19": 2,
+        "q20": 2,
+        "q21": 1,
+        "q22": 1,
+        "q23": 1,
+        "q24": null,
+        "q25": 1,
+        "q26": null,
+        "q27": 1,
+        "q28": 4,
+        "q29": null,
+        "q30": 1,
+        "q31": 10,
+        "q32": 1,
+        "q33": 1,
+        "q34": 1,
+        "q35": 2,
+        "q36": 1
+      }
+    },
+    "hybrid": {
+      "retriever": "hybrid",
+      "all": {
+        "recall@1": 0.6666666666666666,
+        "recall@3": 0.7777777777777778,
+        "recall@5": 0.9444444444444444,
+        "recall@10": 1.0,
+        "mrr@10": 0.7604497354497355,
+        "n": 36
+      },
+      "by_kind": {
+        "exact": {
+          "recall@1": 0.9166666666666666,
+          "recall@3": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.9583333333333334,
+          "n": 12
+        },
+        "paraphrase": {
+          "recall@1": 0.5416666666666666,
+          "recall@3": 0.6666666666666666,
+          "recall@5": 0.9166666666666666,
+          "recall@10": 1.0,
+          "mrr@10": 0.6615079365079365,
+          "n": 24
+        }
+      },
+      "ranks": {
+        "q01": 4,
+        "q02": 1,
+        "q03": 1,
+        "q04": 2,
+        "q05": 1,
+        "q06": 4,
+        "q07": 1,
+        "q08": 3,
+        "q09": 4,
+        "q10": 1,
+        "q11": 1,
+        "q12": 5,
+        "q13": 1,
+        "q14": 1,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 1,
+        "q19": 1,
+        "q20": 1,
+        "q21": 1,
+        "q22": 1,
+        "q23": 1,
+        "q24": 7,
+        "q25": 1,
+        "q26": 4,
+        "q27": 2,
+        "q28": 1,
+        "q29": 6,
+        "q30": 1,
+        "q31": 5,
+        "q32": 3,
+        "q33": 1,
+        "q34": 1,
+        "q35": 1,
+        "q36": 1
+      }
+    },
+    "dense+rerank": {
+      "retriever": "dense+rerank",
+      "all": {
+        "recall@1": 0.75,
+        "recall@3": 0.8888888888888888,
+        "recall@5": 0.9166666666666666,
+        "recall@10": 0.9722222222222222,
+        "mrr@10": 0.8236882716049383,
+        "n": 36
+      },
+      "by_kind": {
+        "exact": {
+          "recall@1": 0.8333333333333334,
+          "recall@3": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.9027777777777778,
+          "n": 12
+        },
+        "paraphrase": {
+          "recall@1": 0.7083333333333334,
+          "recall@3": 0.8333333333333334,
+          "recall@5": 0.875,
+          "recall@10": 0.9583333333333334,
+          "mrr@10": 0.7841435185185185,
+          "n": 24
+        }
+      },
+      "ranks": {
+        "q01": 2,
+        "q02": 1,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 2,
+        "q07": 1,
+        "q08": 4,
+        "q09": 9,
+        "q10": 1,
+        "q11": 1,
+        "q12": null,
+        "q13": 1,
+        "q14": 1,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 1,
+        "q19": 1,
+        "q20": 3,
+        "q21": 1,
+        "q22": 1,
+        "q23": 1,
+        "q24": 8,
+        "q25": 1,
+        "q26": 3,
+        "q27": 2,
+        "q28": 1,
+        "q29": 1,
+        "q30": 1,
+        "q31": 1,
+        "q32": 1,
+        "q33": 1,
+        "q34": 1,
+        "q35": 1,
+        "q36": 1
+      }
+    },
+    "hybrid+rerank": {
+      "retriever": "hybrid+rerank",
+      "all": {
+        "recall@1": 0.75,
+        "recall@3": 0.8611111111111112,
+        "recall@5": 0.9166666666666666,
+        "recall@10": 0.9722222222222222,
+        "mrr@10": 0.8210648148148149,
+        "n": 36
+      },
+      "by_kind": {
+        "exact": {
+          "recall@1": 0.8333333333333334,
+          "recall@3": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.9027777777777778,
+          "n": 12
+        },
+        "paraphrase": {
+          "recall@1": 0.7083333333333334,
+          "recall@3": 0.7916666666666666,
+          "recall@5": 0.875,
+          "recall@10": 0.9583333333333334,
+          "mrr@10": 0.7802083333333334,
+          "n": 24
+        }
+      },
+      "ranks": {
+        "q01": 2,
+        "q02": 1,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 2,
+        "q07": 1,
+        "q08": 4,
+        "q09": 10,
+        "q10": 1,
+        "q11": 1,
+        "q12": null,
+        "q13": 1,
+        "q14": 1,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 1,
+        "q19": 1,
+        "q20": 3,
+        "q21": 1,
+        "q22": 1,
+        "q23": 1,
+        "q24": 8,
+        "q25": 1,
+        "q26": 4,
+        "q27": 2,
+        "q28": 1,
+        "q29": 1,
+        "q30": 1,
+        "q31": 1,
+        "q32": 1,
+        "q33": 1,
+        "q34": 1,
+        "q35": 1,
+        "q36": 1
+      }
+    }
+  },
+  "answers": {
+    "retriever": "hybrid+rerank",
+    "threshold_from_dev": 0.683,
+    "dev_scores": {
+      "d01": 0.8014440536499023,
+      "d02": 0.7418729662895203,
+      "d03": 0.8251391649246216,
+      "d04": 0.7751160860061646,
+      "d05": 0.6886496543884277,
+      "d06": 0.7634139060974121,
+      "du01": 0.41249173879623413,
+      "du02": 0.4194575548171997,
+      "du03": 0.8260011672973633,
+      "du04": 0.7609343528747559,
+      "du05": 0.6768854856491089,
+      "du06": 0.8027830719947815
+    },
+    "k=5": {
+      "faithfulness": 0.9523809523809523,
+      "faithfulness_n": 42,
+      "answer_hit": 0.5833333333333334,
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "n_answerable": 36,
+      "n_unanswerable": 6
+    },
+    "k=1": {
+      "faithfulness": 1.0,
+      "faithfulness_n": 33,
+      "answer_hit": 0.5555555555555556,
+      "false_abstention": 0.19444444444444445,
+      "correct_abstention": 0.3333333333333333,
+      "n_answerable": 36,
+      "n_unanswerable": 6
+    },
+    "huge chunks": {
+      "faithfulness": 1.0,
+      "faithfulness_n": 40,
+      "answer_hit": 0.4722222222222222,
+      "false_abstention": 0.05555555555555555,
+      "correct_abstention": 0.0,
+      "n_answerable": 36,
+      "n_unanswerable": 6
+    }
+  },
+  "examples": {
+    "q01": {
+      "question": "When a release is rolled back, how does the script figure out which revision should get the traffic again?",
+      "answer": "Roll back to stable; `./scripts/rollback.sh` (revision with the most traffic) or `./scripts/rollback.sh <revision>`; no [4] `rollback.sh` used to pin 100% of traffic to a hard-coded revision. [2] `canary.sh` puts it at 20% next to the revision that currently has the most traffic, then a person decides: `promote.sh` (100%) or `rollback.sh` (back to stable). [1]",
+      "cited": [
+        "invoice-mlops/docs/runbook.md#1",
+        "invoice-mlops/docs/runbook.md#4",
+        "invoice-mlops/docs/architecture.md#4"
+      ]
+    },
+    "q02": {
+      "question": "Why can't the promotion decision in the training pipeline reuse a result from an earlier run?",
+      "answer": "`pipelines/risk_train_pipeline.py` (KFP v2 on Vertex AI Pipelines): `features-bq` \u2192 `train-xgboost` \u2192 `evaluate-gold` \u2192 `dsl.If` promote \u2192 `register-model`, `dsl.Else` \u2192 `notify-rejected`. [2] Never submit while a `risk-train-eval` run is queued or running. [4] *\"Why is caching disabled on the gate?\"* With caching, a re-run with the same inputs would reuse the old decision even though the champion changed. [1]",
+      "cited": [
+        "invoice-mlops/docs/walkthrough.md#5",
+        "invoice-mlops/docs/walkthrough.md#12",
+        "invoice-mlops/docs/walkthrough.md#6"
+      ]
+    },
+    "q03": {
+      "question": "Why is the risk model served from Cloud Run rather than from a managed Vertex AI prediction endpoint?",
+      "answer": "Cloud Run instead of a Vertex AI Endpoint for serving. [1] `min-instances=0` on Cloud Run, Cloud Run Jobs instead of always-on services, no Vertex AI Endpoints (Cloud Run serves the model), CPU-only pipeline components. [2] A risk classifier retrains itself: features in BigQuery, a Vertex AI pipeline that only promotes a model if it beats the current one on a gold set, Model Registry, canary releases on Cloud Run with instant rollback, and a daily drift job that retrains when the inputs move. [4]",
+      "cited": [
+        "invoice-mlops/docs/architecture.md#8",
+        "invoice-mlops/infra/README.md#3",
+        "invoice-mlops/docs/walkthrough.md#22"
+      ]
+    },
+    "q04": {
+      "question": "Why do the Gemini calls go to the EU multi-region instead of the region where the rest of the project is deployed?",
+      "answer": "The `eu` multi-region keeps processing in the EU. [1] Checked on 2026-10-22 on the Vertex AI generative AI pricing page, Gemini 3.8 Flash, `eu` multi-region (\"non-global\") rate: [2] The default model is `gemini-3.8-flash` on the `eu` endpoint, because no GA Flash model was served from `europe-west4` regionally on 2026-10-22. [3]",
+      "cited": [
+        "invoice-mlops/docs/architecture.md#8",
+        "invoice-mlops/docs/cost.md#3",
+        "invoice-mlops/docs/walkthrough.md#15"
+      ]
+    },
+    "q05": {
+      "question": "Why does the risk classifier look so much worse on its holdout split than on the curated gold set?",
+      "answer": "*\"Why is holdout F1 (0.67) so far below gold F1 (0.86)?\"* The holdout labels carry the 8% noise, so even a perfect learner of the policy is penalised there. [2] Small data: on 120 gold invoices, one wrong prediction moves F1 by about 0.01. [4] gold set `data/gold/risk_gold.csv`; 120; clean (no flips), different seed; 0.863; 0.957; 0.786 [1]",
+      "cited": [
+        "invoice-mlops/docs/walkthrough.md#2",
+        "invoice-mlops/docs/model_card.md#1",
+        "invoice-mlops/docs/model_card.md#0"
+      ]
+    },
+    "q06": {
+      "question": "Why doesn't the API write the prediction log in a background task after it has already responded?",
+      "answer": "*\"Why is logging synchronous?\"* Cloud Run may throttle CPU after the response is sent, so background tasks are not reliable without \"CPU always allocated\". [2] *\"Logging failed, what does the client see?\"* A normal answer. [1]",
+      "cited": [
+        "invoice-mlops/docs/walkthrough.md#8",
+        "invoice-mlops/docs/walkthrough.md#9"
+      ]
+    }
+  },
+  "chunking": {
+    "structure-aware 220": {
+      "retriever": "dense",
+      "all": {
+        "recall@1": 0.5833333333333334,
+        "recall@3": 0.8611111111111112,
+        "recall@5": 0.9166666666666666,
+        "recall@10": 0.9444444444444444,
+        "mrr@10": 0.7201719576719577,
+        "n": 36
+      },
+      "by_kind": {
+        "exact": {
+          "recall@1": 0.6666666666666666,
+          "recall@3": 0.9166666666666666,
+          "recall@5": 0.9166666666666666,
+          "recall@10": 1.0,
+          "mrr@10": 0.7896825396825397,
+          "n": 12
+        },
+        "paraphrase": {
+          "recall@1": 0.5416666666666666,
+          "recall@3": 0.8333333333333334,
+          "recall@5": 0.9166666666666666,
+          "recall@10": 0.9166666666666666,
+          "mrr@10": 0.6854166666666667,
+          "n": 24
+        }
+      },
+      "ranks": {
+        "q01": 2,
+        "q02": 3,
+        "q03": 1,
+        "q04": 4,
+        "q05": 1,
+        "q06": null,
+        "q07": 1,
+        "q08": 2,
+        "q09": 1,
+        "q10": 1,
+        "q11": 2,
+        "q12": null,
+        "q13": 1,
+        "q14": 1,
+        "q15": 1,
+        "q16": 2,
+        "q17": 1,
+        "q18": 1,
+        "q19": 1,
+        "q20": 1,
+        "q21": 1,
+        "q22": 1,
+        "q23": 2,
+        "q24": 3,
+        "q25": 7,
+        "q26": 2,
+        "q27": 3,
+        "q28": 1,
+        "q29": 1,
+        "q30": 1,
+        "q31": 5,
+        "q32": 3,
+        "q33": 1,
+        "q34": 1,
+        "q35": 1,
+        "q36": 1
+      }
+    },
+    "fixed 220": {
+      "retriever": "dense",
+      "all": {
+        "recall@1": 0.5,
+        "recall@3": 0.8055555555555556,
+        "recall@5": 0.8888888888888888,
+        "recall@10": 0.9444444444444444,
+        "mrr@10": 0.6636904761904762,
+        "n": 36
+      },
+      "by_kind": {
+        "exact": {
+          "recall@1": 0.5,
+          "recall@3": 0.8333333333333334,
+          "recall@5": 0.9166666666666666,
+          "recall@10": 1.0,
+          "mrr@10": 0.6813492063492063,
+          "n": 12
+        },
+        "paraphrase": {
+          "recall@1": 0.5,
+          "recall@3": 0.7916666666666666,
+          "recall@5": 0.875,
+          "recall@10": 0.9166666666666666,
+          "mrr@10": 0.6548611111111111,
+          "n": 24
+        }
+      },
+      "ranks": {
+        "q01": 2,
+        "q02": 1,
+        "q03": 2,
+        "q04": 1,
+        "q05": 1,
+        "q06": 1,
+        "q07": 1,
+        "q08": 2,
+        "q09": null,
+        "q10": 1,
+        "q11": 1,
+        "q12": 3,
+        "q13": 1,
+        "q14": 1,
+        "q15": 2,
+        "q16": 5,
+        "q17": 1,
+        "q18": 1,
+        "q19": 2,
+        "q20": 1,
+        "q21": 1,
+        "q22": 3,
+        "q23": 2,
+        "q24": 10,
+        "q25": 7,
+        "q26": 1,
+        "q27": 1,
+        "q28": 2,
+        "q29": 4,
+        "q30": null,
+        "q31": 5,
+        "q32": 3,
+        "q33": 1,
+        "q34": 1,
+        "q35": 1,
+        "q36": 2
+      },
+      "n_chunks": 93
+    },
+    "fixed 1000": {
+      "retriever": "dense",
+      "all": {
+        "recall@1": 0.6111111111111112,
+        "recall@3": 0.75,
+        "recall@5": 0.8888888888888888,
+        "recall@10": 0.9444444444444444,
+        "mrr@10": 0.7151234567901235,
+        "n": 36
+      },
+      "by_kind": {
+        "exact": {
+          "recall@1": 0.6666666666666666,
+          "recall@3": 0.8333333333333334,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.7777777777777778,
+          "n": 12
+        },
+        "paraphrase": {
+          "recall@1": 0.5833333333333334,
+          "recall@3": 0.7083333333333334,
+          "recall@5": 0.8333333333333334,
+          "recall@10": 0.9166666666666666,
+          "mrr@10": 0.6837962962962963,
+          "n": 24
+        }
+      },
+      "ranks": {
+        "q01": 1,
+        "q02": 2,
+        "q03": 2,
+        "q04": 1,
+        "q05": 1,
+        "q06": 9,
+        "q07": 1,
+        "q08": null,
+        "q09": 10,
+        "q10": 1,
+        "q11": 1,
+        "q12": 4,
+        "q13": 1,
+        "q14": 4,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 1,
+        "q19": 1,
+        "q20": 1,
+        "q21": 1,
+        "q22": 1,
+        "q23": 2,
+        "q24": 1,
+        "q25": 4,
+        "q26": 1,
+        "q27": 4,
+        "q28": 1,
+        "q29": 1,
+        "q30": 5,
+        "q31": null,
+        "q32": 1,
+        "q33": 2,
+        "q34": 1,
+        "q35": 3,
+        "q36": 1
+      },
+      "n_chunks": 25
+    }
+  },
+  "seconds": 760.9
+}

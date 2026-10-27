@@ -1,0 +1,387 @@
+# Hand-written from the corpus before looking at any retrieval result.
+questions:
+  # ---------------- invoice-mlops (22) ----------------
+  - id: q01
+    question: "When a release is rolled back, how does the script figure out which revision should get the traffic again?"
+    kind: paraphrase
+    answer: "It reads the stable revision from the live traffic split instead of using a hard-coded revision."
+    evidence:
+      - doc: invoice-mlops/docs/runbook.md
+        quote: "rollback takes the stable revision from the live split instead of a constant"
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "rollback reads the stable revision from the live split"
+
+  - id: q02
+    question: "Why can't the promotion decision in the training pipeline reuse a result from an earlier run?"
+    kind: paraphrase
+    answer: "Caching is disabled for the gate and the registration so they always look at the Registry as it is now; a cached decision would ignore a champion that has changed since."
+    evidence:
+      - doc: invoice-mlops/docs/architecture.md
+        quote: "disabled for the gate and the registration, so they always see the Registry"
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "would reuse the old decision even though the champion changed"
+
+  - id: q03
+    question: "Why is the risk model served from Cloud Run rather than from a managed Vertex AI prediction endpoint?"
+    kind: paraphrase
+    answer: "A Vertex AI Endpoint bills at least one node every hour even when idle, which alone exceeds the budget; Cloud Run scales to zero and includes traffic splitting."
+    evidence:
+      - doc: invoice-mlops/docs/architecture.md
+        quote: "A Vertex Endpoint bills at least one node per hour even when it is idle"
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "An Endpoint bills a node every hour even when idle."
+      - doc: invoice-mlops/docs/cost.md
+        quote: "Vertex AI Endpoints (a node bills every hour, even idle)"
+      - doc: invoice-mlops/docs/runbook.md
+        quote: "Do not create Vertex AI Endpoints (billed per hour even when idle)."
+
+  - id: q04
+    question: "Why do the Gemini calls go to the EU multi-region instead of the region where the rest of the project is deployed?"
+    kind: paraphrase
+    answer: "On 2026-10-22 no GA Gemini Flash model was served from the europe-west4 regional endpoint; the eu multi-region still keeps processing in the EU."
+    evidence:
+      - doc: invoice-mlops/docs/architecture.md
+        quote: "On 2026-10-22 no GA Gemini Flash model was served from the `europe-west4` regional endpoint."
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "because no GA Flash model was served from `europe-west4` regionally on 2026-10-22"
+      - doc: invoice-mlops/docs/pii.md
+        quote: "the `eu` endpoint keeps processing in the EU"
+
+  - id: q05
+    question: "Why does the risk classifier look so much worse on its holdout split than on the curated gold set?"
+    kind: paraphrase
+    answer: "The holdout labels carry the 8% label noise used in training, so even a perfect learner of the policy is penalised; the gold set has clean labels."
+    evidence:
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "The holdout labels carry the 8% noise, so even a perfect learner"
+      - doc: invoice-mlops/docs/model_card.md
+        quote: "the holdout is capped by its own label noise"
+
+  - id: q06
+    question: "Why doesn't the API write the prediction log in a background task after it has already responded?"
+    kind: paraphrase
+    answer: "Cloud Run may throttle CPU after the response is sent, so background tasks are not reliable without CPU always allocated."
+    evidence:
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "Cloud Run may throttle CPU after the response is sent"
+
+  - id: q07
+    question: "What keeps drift alerts from kicking off one retraining run right after another?"
+    kind: paraphrase
+    answer: "The launcher's guards: it never submits while a training run is queued or running, and after a drift-triggered run it waits 24 hours before the next drift-triggered one."
+    evidence:
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "After a drift-triggered run, wait 24 h before the next drift-triggered one."
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "Never submit while a `risk-train-eval` run is queued or running."
+
+  - id: q08
+    question: "How does the extraction service decide which pages of a PDF are worth sending to the model?"
+    kind: paraphrase
+    answer: "It scores each page's text with weighted keyword patterns (positive and negative), keeps pages above a threshold, and keeps all pages if none qualifies."
+    evidence:
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "Score every page's text with weighted keyword patterns"
+
+  - id: q09
+    question: "What stops the LLM from making up field values that are not on the invoice?"
+    kind: paraphrase
+    answer: "The output schema allows null, the prompt says never guess, and evaluation counts a value where the gold label is null as a false positive."
+    evidence:
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: 'The schema allows null, the prompt says "never guess"'
+
+  - id: q10
+    question: "What caused the server errors seen during the September canary load test?"
+    kind: paraphrase
+    answer: "Cold starts: with min-instances=0, 6 of the 200 requests returned 5xx, all on the stable revision."
+    evidence:
+      - doc: invoice-mlops/docs/runbook.md
+        quote: "caused by cold starts (`min-instances=0`)"
+      - doc: invoice-mlops/README.md
+        quote: "6 of 200 requests returned 5xx, all on the stable revision, from cold starts"
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "the only 5xx (6 of 200) were cold starts"
+
+  - id: q11
+    question: "As observed in the reference project on 2026-10-22, what was actually configured to run training every week?"
+    kind: paraphrase
+    answer: "A Vertex AI Pipelines schedule (risk-train-eval-scheduled, Mondays 08:00 Europe/Madrid) that was paused; the Cloud Scheduler API was not enabled."
+    evidence:
+      - doc: invoice-mlops/docs/evidence.md
+        quote: "Vertex AI Pipelines schedule `risk-train-eval-scheduled` (`0 8 * * 1`, Europe/Madrid), **paused**"
+
+  - id: q12
+    question: "How are the model's reasoning tokens charged when Gemini extracts an invoice?"
+    kind: paraphrase
+    answer: "Thinking tokens are billed as output tokens."
+    evidence:
+      - doc: invoice-mlops/docs/cost.md
+        quote: "input and output tokens (thinking tokens are billed as output)"
+
+  - id: q13
+    question: "What does it mean when the risk classifier flags an invoice?"
+    kind: paraphrase
+    answer: "That the invoice should go to an analyst for manual review before it is paid; it does not predict fraud."
+    evidence:
+      - doc: invoice-mlops/docs/model_card.md
+        quote: "should this invoice go to an analyst before it is paid"
+      - doc: invoice-mlops/README.md
+        quote: "an XGBoost classifier that decides whether an invoice needs manual review"
+
+  - id: q14
+    question: "How is a processed document identified in the extraction log if the PDF itself is never stored?"
+    kind: paraphrase
+    answer: "By a SHA-256 hash of the PDF, stored with page counts, token counts, latency, model and prompt version."
+    evidence:
+      - doc: invoice-mlops/docs/pii.md
+        quote: "SHA-256 of the PDF, page counts, token counts, latency"
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "One row per call in `extractions`: document hash, pages, tokens"
+
+  - id: q15
+    question: "When bringing the platform up in a new GCP project, which step has to be done by hand in the console because Terraform cannot do it?"
+    kind: paraphrase
+    answer: "Connecting the GitHub repository to Cloud Build through the GitHub App; 1st-gen triggers cannot do it from Terraform."
+    evidence:
+      - doc: invoice-mlops/infra/README.md
+        quote: "Connect the GitHub repo to Cloud Build (GitHub App, one click in the console"
+      - doc: invoice-mlops/infra/README.md
+        quote: "1st-gen triggers cannot do this from Terraform"
+
+  - id: q16
+    question: "Which environment variable on a Cloud Run revision pins the risk model version that revision serves?"
+    kind: exact
+    answer: "MODEL_VERSION_ID (EXTRACTOR_VERSION_ID does the same for the prompt)."
+    evidence:
+      - doc: invoice-mlops/docs/architecture.md
+        quote: "sets `MODEL_VERSION_ID` and `EXTRACTOR_VERSION_ID` on the revision"
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "pins it on the revision (`MODEL_VERSION_ID`)"
+
+  - id: q17
+    question: "What PSI value on a feature makes the daily monitoring job report drift?"
+    kind: exact
+    answer: "PSI above 0.25 on any feature (or a KS p-value below 0.01 on the score)."
+    evidence:
+      - doc: invoice-mlops/docs/architecture.md
+        quote: "Thresholds: PSI > 0.25 on any feature, or KS p-value < 0.01 on the score."
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "above 0.25 is a major shift (threshold used)"
+
+  - id: q18
+    question: "What minimum F1 on the gold set must a new risk model reach before it can be promoted?"
+    kind: exact
+    answer: "0.75 (min_f1), and no more than 0.02 below the current champion."
+    evidence:
+      - doc: invoice-mlops/docs/architecture.md
+        quote: "It must reach `min_f1` (0.75)"
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "The candidate's gold F1 must be ≥ `min_f1` (0.75)"
+      - doc: invoice-mlops/docs/model_card.md
+        quote: "Promotion requires gold F1 ≥ 0.75"
+
+  - id: q19
+    question: "Which Cloud Build config file deploys a model once it has been promoted in the Registry?"
+    kind: exact
+    answer: "cloudbuild-model-deploy.yaml, triggered by the model-promoted Pub/Sub message."
+    evidence:
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "A Pub/Sub-triggered Cloud Build (`cloudbuild-model-deploy.yaml`) creates a revision"
+
+  - id: q20
+    question: "How many documents in the extraction gold set have no invoice number?"
+    kind: exact
+    answer: "3; their expected invoice_number is null."
+    evidence:
+      - doc: invoice-mlops/data/gold/extract/README.md
+        quote: "3 invoices have no invoice number, so the expected value is `null`."
+
+  - id: q21
+    question: "What is the GCS bucket that holds the Terraform state called?"
+    kind: exact
+    answer: "<project_id>-tfstate, a versioned GCS bucket."
+    evidence:
+      - doc: invoice-mlops/infra/README.md
+        quote: "State lives in a versioned GCS bucket (`<project_id>-tfstate`)."
+
+  - id: q22
+    question: "How many automated tests does invoice-mlops run without any GCP access?"
+    kind: exact
+    answer: "73 tests, using fakes for BigQuery, Pub/Sub, Vertex AI and the LLM."
+    evidence:
+      - doc: invoice-mlops/README.md
+        quote: "(73 tests, with fakes for BigQuery, Pub/Sub, Vertex AI and the LLM)"
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "73 tests run in CI and on a laptop with no GCP access"
+
+  # ---------------- agent-harness (9) ----------------
+  - id: q23
+    question: "What is the only runtime dependency of agent-harness?"
+    kind: exact
+    answer: "PyYAML (the anthropic SDK is an optional extra for the Claude adapter)."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "The only runtime dependency is PyYAML"
+
+  - id: q24
+    question: "How does the harness notice that the agent is going around in circles?"
+    kind: paraphrase
+    answer: "Stuck detection: the same tool call with the same arguments three times in a row stops the run."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "the same call with the same arguments three times in a row stops the run"
+      - doc: agent-harness/README.md
+        quote: "stuck detection: the same call 3 times in a row stops the run"
+      - doc: agent-harness/docs/results.md
+        quote: "stuck detection: the same call 3 times in a row stops the run"
+
+  - id: q25
+    question: "What is the default per-run cost budget when running the harness against a paid API model?"
+    kind: exact
+    answer: "max_cost_usd, 0.50 USD by default."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "each run has a `max_cost_usd` budget in the config (0.50 by default)"
+
+  - id: q26
+    question: "Why can't the agent run arbitrary shell commands?"
+    kind: paraphrase
+    answer: "There is no OS sandbox, so typed tools are the safety boundary; a bash tool would be the largest risk."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "without a sandbox it would be the largest risk"
+      - doc: agent-harness/README.md
+        quote: "With no OS sandbox here, typed tools are the safety boundary"
+
+  - id: q27
+    question: "After roughly how many tokens of history does the harness start compacting old steps?"
+    kind: exact
+    answer: "About 1,500 tokens; older steps are folded into a structured summary and the last three steps stay verbatim."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "Past ~1,500 tokens of history, old steps fold into a summary"
+
+  - id: q28
+    question: "What success rate does harness version v6 reach on the 10-task suite with the fake model?"
+    kind: exact
+    answer: "9/10 (90%)."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "recent tail kept verbatim). | `fake` | 9/10 (90%)"
+      - doc: agent-harness/docs/results.md
+        quote: "recent tail kept verbatim). | `fake` | 9/10 (90%)"
+
+  - id: q29
+    question: "How does the harness decide a task was really solved instead of trusting the model?"
+    kind: paraphrase
+    answer: "It restores the original acceptance tests in a fresh copy of the workspace and runs them itself."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "Verification restores the original tests in a fresh copy and runs them."
+      - doc: agent-harness/README.md
+        quote: "decided by the harness running the original tests, never by the model"
+      - doc: agent-harness/README.md
+        quote: "The harness reruns the original acceptance tests in a fresh copy"
+
+  - id: q30
+    question: "Why is the harness a single agent instead of delegating work to subagents?"
+    kind: paraphrase
+    answer: "Subagents pay off mainly in broad exploration phases at roughly 15 times the tokens, and tasks this small have none."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "at roughly 15× the tokens; tasks this small have none"
+
+  - id: q31
+    question: "What happens when the agent makes a tool call that no permission rule covers?"
+    kind: paraphrase
+    answer: "It is denied (and tools without an allow or ask rule are never shown to the model)."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "calls matching no rule are denied"
+
+  # ---------------- jobbot (5) ----------------
+  - id: q32
+    question: "When jobbot fills in an application form, at what point does it stop?"
+    kind: paraphrase
+    answer: "Right before Submit: it outlines the Submit button in red and waits for the human to review and submit."
+    evidence:
+      - doc: jobbot/README.md
+        quote: "outlines the Submit button in red and waits"
+      - doc: jobbot/README.md
+        quote: "Playwright prefills the form and stops before Submit for human approval"
+      - doc: jobbot/README.md
+        quote: "Prefill stops before Submit; outreach messages and LinkedIn posts are drafts"
+      - doc: jobbot/docs/scheduling.md
+        quote: "Prefill runs in a visible window and waits for you"
+
+  - id: q33
+    question: "Why do applications to Lever postings have to be done by hand?"
+    kind: paraphrase
+    answer: "Lever's form rejects submissions coming from an automated browser."
+    evidence:
+      - doc: jobbot/README.md
+        quote: "Lever's form rejects submissions from an automated browser"
+
+  - id: q34
+    question: "In the CV tailoring playbook, what does the reviewer pass get to look at?"
+    kind: paraphrase
+    answer: "The posting and the drafter's output, but not the drafter's reasoning; it is an independent subagent."
+    evidence:
+      - doc: jobbot/TAILORING.md
+        quote: "a subagent that sees the posting and the output, not the drafter's reasoning"
+
+  - id: q35
+    question: "Which environment variable forces jobbot to use a particular PDF renderer?"
+    kind: exact
+    answer: "JOBBOT_PDF, set to word, libreoffice or basic."
+    evidence:
+      - doc: jobbot/docs/scheduling.md
+        quote: "plain renderer (PyMuPDF). Force one with `JOBBOT_PDF=word|libreoffice|basic`."
+
+  - id: q36
+    question: "Why are the author's own extra job sources kept out of the public repository?"
+    kind: paraphrase
+    answer: "One of them scrapes a job board's HTML, which the board's terms don't allow."
+    evidence:
+      - doc: jobbot/docs/left-out.md
+        quote: "One of them scrapes a job board's HTML, which its terms don't allow"
+      - doc: jobbot/README.md
+        quote: "No HTML scraping in this repo; anything you add locally (`profile/local_sources.py`)"
+
+  # ---------------- unanswerable (6) ----------------
+  - id: u01
+    question: "What open-source license is invoice-mlops published under?"
+    kind: unanswerable
+    answer: null
+    evidence: []
+
+  - id: u02
+    question: "What learning rate is the XGBoost risk model trained with?"
+    kind: unanswerable
+    answer: null
+    evidence: []
+
+  - id: u03
+    question: "How long does one full risk-train-eval pipeline run take on Vertex AI?"
+    kind: unanswerable
+    answer: null
+    evidence: []
+
+  - id: u04
+    question: "How many vCPUs does each invoice-mlops-api Cloud Run instance get?"
+    kind: unanswerable
+    answer: null
+    evidence: []
+
+  - id: u05
+    question: "What sampling temperature does agent-harness use when it calls Claude?"
+    kind: unanswerable
+    answer: null
+    evidence: []
+
+  - id: u06
+    question: "What is the file name of jobbot's local SQLite database?"
+    kind: unanswerable
+    answer: null
+    evidence: []

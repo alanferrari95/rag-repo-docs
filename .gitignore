@@ -5,3 +5,7 @@ __pycache__/
 *.egg-info/
 # Built artifacts: rebuild with `python -m ragdocs build`
 index/
+*.log
+
+# Local launch config for the API preview
+.claude/

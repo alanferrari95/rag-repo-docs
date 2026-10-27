@@ -1,0 +1,90 @@
+# Calibration set for the abstention threshold. Hand-written from the corpus before
+# looking at any retrieval result; no question or quote overlaps golden.yaml.
+questions:
+  - id: d01
+    question: "What max_depth is the risk model's XGBoost trained with?"
+    kind: exact
+    answer: "max_depth=4 (with n_estimators=100)."
+    evidence:
+      - doc: invoice-mlops/docs/model_card.md
+        quote: "XGBoost (`n_estimators=100`, `max_depth=4`) on 6 features"
+
+  - id: d02
+    question: "What is the identity that runs pull-request builds actually allowed to do?"
+    kind: paraphrase
+    answer: "Only write build logs, because PR builds run code from any branch."
+    evidence:
+      - doc: invoice-mlops/docs/walkthrough.md
+        quote: "The `ci` SA can only write logs, so a malicious or buggy PR cannot deploy"
+      - doc: invoice-mlops/docs/architecture.md
+        quote: "write build logs | everything else: PR builds run code from any branch"
+
+  - id: d03
+    question: "Why is the billing budget alert not managed with Terraform?"
+    kind: paraphrase
+    answer: "Budgets are scoped to the billing account, not to the project, so they are created in the console."
+    evidence:
+      - doc: invoice-mlops/docs/cost.md
+        quote: "scoped to the billing account, not to the project"
+      - doc: invoice-mlops/infra/README.md
+        quote: "it is billing-account scoped, so it is not in this config"
+
+  - id: d04
+    question: "Which Ollama model does the invoice-mlops README tell you to pull for local extraction?"
+    kind: exact
+    answer: "qwen2.5:7b."
+    evidence:
+      - doc: invoice-mlops/README.md
+        quote: "docker compose exec ollama ollama pull qwen2.5:7b"
+
+  - id: d05
+    question: "Where does the agent make its file edits so that the original repository stays untouched?"
+    kind: paraphrase
+    answer: "In an isolated workspace: a temporary copy or a detached git worktree; the source is never written."
+    evidence:
+      - doc: agent-harness/README.md
+        quote: "A temp copy or a detached `git worktree`; the source is never written."
+
+  - id: d06
+    question: "Which sentence-embedding model does jobbot run locally to rank postings?"
+    kind: exact
+    answer: "paraphrase-multilingual-MiniLM-L12-v2, through fastembed/ONNX."
+    evidence:
+      - doc: jobbot/README.md
+        quote: "(`paraphrase-multilingual-MiniLM-L12-v2` through fastembed/ONNX, `emb` table)"
+
+  - id: du01
+    question: "What is the capital of Australia?"
+    kind: off_topic
+    answer: null
+    evidence: []
+
+  - id: du02
+    question: "Who wrote the novel One Hundred Years of Solitude?"
+    kind: off_topic
+    answer: null
+    evidence: []
+
+  - id: du03
+    question: "What is the p99 latency of the /score endpoint?"
+    kind: unanswerable
+    answer: null
+    evidence: []
+
+  - id: du04
+    question: "Which Slack channel or on-call tool receives the invoice-mlops drift alerts?"
+    kind: unanswerable
+    answer: null
+    evidence: []
+
+  - id: du05
+    question: "How many unit tests does agent-harness have?"
+    kind: unanswerable
+    answer: null
+    evidence: []
+
+  - id: du06
+    question: "How many new postings does jobbot typically find on a daily run?"
+    kind: unanswerable
+    answer: null
+    evidence: []
